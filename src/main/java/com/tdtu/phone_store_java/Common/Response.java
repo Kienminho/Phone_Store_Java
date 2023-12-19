@@ -17,7 +17,7 @@ public class Response<T> {
     private T data;
 
     public static <T> Response<T> createSuccessResponseModel(int totalRecord, T data) {
-        return new Response<>(200, "Successful", totalRecord, data);
+        return new Response<>(200, "Thành công.", totalRecord, data);
     }
 
     public static <T> Response<T> createErrorResponseModel(String message, T data) {
