@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en" class="light-style layout-menu-fixed" dir="ltr" data-theme="theme-default" data-assets-path="/assets/"
+      data-template="vertical-menu-template-free">
+<head th:replace="~{mainFragment :: head}"></head>
+
+<body>
+<div class="layout-wrapper layout-content-navbar">
+    <div class="layout-container">
+        <!-- Menu -->
+        <aside th:replace="~{mainFragment :: aside}">
+        </aside>
+        <!-- / Menu -->
+        <!-- Layout container -->
+        <div class="layout-page">
+            <nav
+                    class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
+                    id="layout-navbar">
+                <div class="layout-menu-toggle navbar-nav align-items-xl-center me-3 me-xl-0 d-xl-none">
+                    <a class="nav-item nav-link px-0 me-xl-4" href="javascript:void(0)">
+                        <i class="bx bx-menu bx-sm"></i>
+                    </a>
+                </div>
+
+                <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
+                    <!-- Search -->
+                    <div class="navbar-nav align-items-center">
+                        <div class="nav-item d-flex align-items-center">
+                            <!--{{!&#45;&#45; <i class="bx bx-search fs-4 lh-0"></i>
+                            <input type="text" class="form-control border-0 shadow-none" placeholder="Search..."
+                                   aria-label="Search..." /> &#45;&#45;}}-->
+                        </div>
+                    </div>
+                    <!-- /Search -->
+
+                    <ul class="navbar-nav flex-row align-items-center ms-auto">
+                        <!-- Place this tag where you want the button to render. -->
+                        <!--{{!&#45;&#45; <li class="nav-item lh-1 me-3">
+                        <a class="github-button" href="https://github.com/themeselection/sneat-html-admin-template-free"
+                           data-icon="octicon-star" data-size="large" data-show-count="true"
+                           aria-label="Star themeselection/sneat-html-admin-template-free on GitHub">Star</a>
+                    </li> &#45;&#45;}}-->
+
+                        <!-- User -->
+                        <li class="nav-item navbar-dropdown dropdown-user dropdown">
+                            <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
+                                <div class="avatar avatar-online">
+                                    <img src="" id="avatar-user" alt="avatar" class="w-px-40 h-auto rounded-circle" />
+                                </div>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li>
+                                    <a class="dropdown-item" href="#">
+                                        <div class="d-flex">
+                                            <div class="flex-shrink-0 me-3">
+                                                <div class="avatar avatar-online">
+                                                    <img alt="avatar" id="sub-avatar" class="w-px-40 h-auto rounded-circle" />
+                                                </div>
+                                            </div>
+                                            <div class="flex-grow-1">
+                                                <span class="user-name fw-semibold d-block"></span>
+                                                <small class="role text-muted"></small>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <div class="dropdown-divider"></div>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="/my-profile">
+                                        <i class="bx bx-user me-2"></i>
+                                        <span class="align-middle">Hồ sơ</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <div class="dropdown-divider"></div>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="/auth/logout">
+                                        <i class="bx bx-power-off me-2"></i>
+                                        <span class="align-middle">Đăng xuất</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <!--/ User -->
+                    </ul>
+                </div>
+            </nav>
+            <!-- Content wrapper -->
+            <div class="content-wrapper">
+                <!-- Content -->
+
+                <div class="container-xxl flex-grow-1 container-p-y">
+                    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Admin /</span> Quản lý sản phẩm</h4>
+
+                    <!-- Basic Bootstrap Table -->
+                    <div class="card">
+                        <div>
+                            <h5 class="card-header">Sản phẩm</h5>
+                            <button style="margin-left: 24px; margin-bottom:8px" type="button" class="btn btn-primary"
+                                    data-bs-toggle="modal" data-bs-target="#addProductModal">Thêm sản phẩm</button>
+
+                        </div>
+
+
+                        <div class="table-responsive text-nowrap">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th>Bar Code</th>
+                                    <th>Tên sản phẩm</th>
+                                    <th>Hình ảnh</th>
+
+                                    <th>Cấu hình</th>
+                                    <th>Ngày nhập</th>
+                                    <th>Giá nhập</th>
+                                    <th>Giá bán</th>
+                                    <th>Loại</th>
+                                    <th>Số lượng bán</th>
+                                    <th>Thao tác</th>
+                                </tr>
+                                </thead>
+                                <tbody class="tbody table-border-bottom-0">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="content-backdrop fade"></div>
+            <!-- Content wrapper -->
+        </div>
+    </div>
+    <!-- Overlay -->
+    <div class="layout-overlay layout-menu-toggle"></div>
+</div>
+
+<!-- modal add product -->
+<div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="add-product-modal-label">Thêm sản phẩm</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="from-add-product" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="product-name">Tên sản phẩm</label>
+                        <input class="form-control" type="text" placeholder="Nhập tên sản phẩm" id="product-name"
+                               name="name">
+                    </div>
+                    <div class="mb-3">
+                        <label for="product-image">Ảnh sản phẩm</label>
+                        <div class="input-group">
+                            <input type="file" class="form-control" id="product-image" name="productImage"
+                                   aria-describedby="inputGroupFileAddon04" aria-label="Upload">
+
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="import-price">Giá nhập sản phẩm</label>
+                        <input class="form-control" type="number" placeholder="Nhập giá nhập" id="import-price" name="importPrice">
+                    </div>
+                    <div class="mb-3">
+                        <label for="sale-price">Giá bán sản phẩm</label>
+                        <input class="form-control" type="number" placeholder="Nhập giá bán" id="sale-price" name="priceSale">
+                    </div>
+                    <div class="mb-3">
+                        <label for="size">Kích thước</label>
+                        <input class="form-control" type="text" placeholder="Nhập kích thước" id="size" name="screenSize">
+                    </div>
+                    <div class="mb-3">
+                        <label for="ram">Ram</label>
+                        <input class="form-control" type="number" placeholder="Nhập cấu hình RAM" id="ram" name="ram">
+                    </div>
+                    <div class="mb-3">
+                        <label for="rom">Rom</label>
+                        <input class="form-control" type="number" placeholder="Nhập cấu hình ROM" id="rom" name="rom">
+                    </div>
+                    <div class="mb-3">
+                        <label for="description-product">Mô tả</label>
+                        <input class="form-control" type="text" placeholder="Nhập mô tả" id="description-product"
+                               name="description">
+                    </div>
+                    <div class="mb-3">
+                        <label for="category">Danh mục</label>
+                        <select class="form-select" aria-label="Default select example" id="category" name="categoryName">
+                            <option selected>Chọn danh mục</option>
+                            <option value="iPhone 11 Series">iPhone 11 Series</option>
+                            <option value="iPhone 12 Series">iPhone 12 Series</option>
+                            <option value="iPhone 13 Series">iPhone 13 Series</option>
+                            <option value="iPhone 14 Series">iPhone 14 Series</option>
+                            <option value="iPhone 14 Series">iPhone 15 Series</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"> Huỷ </button>
+            <button type="button" class="btn-add-product btn btn-primary pe-auto" onclick="addProduct()"> Thêm </button>
+        </div>
+    </div>
+</div>
+
+<!-- modal update product --->
+<div class="modal fade" id="update-product-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="update-product-modal-label">Cập nhật sản phẩm</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="from-update-product" enctype="multipart/form-data">
+                    <input class="form-control d-none" type="number" id="bar-code" name="barCode">
+                    <div class="mb-3">
+                        <label for="product-name">Tên sản phẩm</label>
+                        <input class="form-control" type="text" placeholder="Nhập tên sản phẩm" id="product-name-update"
+                               name="name">
+                    </div>
+                    <div class="mb-3">
+                        <label for="product-image-update">Ảnh sản phẩm</label>
+                        <div class="input-group">
+                            <input type="file" class="form-control" id="product-image-update" name="productImageUpdate"
+                                   aria-describedby="inputGroupFileAddon04" aria-label="Upload">
+
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="import-price-update">Giá nhập sản phẩm</label>
+                        <input class="form-control" type="number" placeholder="Nhập giá nhập" id="import-price-update"
+                               name="importPrice">
+                    </div>
+                    <div class="mb-3">
+                        <label for="sale-price-update">Giá bán sản phẩm</label>
+                        <input class="form-control" type="number" placeholder="Nhập giá bán" id="sale-price-update"
+                               name="priceSale">
+                    </div>
+                    <div class="mb-3">
+                        <label for="ram-update">Ram</label>
+                        <input class="form-control" type="number" placeholder="Nhập cấu hình RAM" id="ram-update" name="ram">
+                    </div>
+                    <div class="mb-3">
+                        <label for="rom-update">Rom</label>
+                        <input class="form-control" type="number" placeholder="Nhập cấu hình ROM" id="rom-update" name="rom">
+                    </div>
+                    <div class="mb-3">
+                        <label for="sale-number-update">Số lượng đã bán</label>
+                        <input class="form-control" type="number" placeholder="Nhập số lượng đã bán" id="sale-number-update"
+                               name="saleNumber">
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"> Huỷ </button>
+            <button type="button" class="btn-add-product btn btn-primary pe-auto" onclick="confirmUpdateProduct()"> Cập nhật
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Delete-->
+<div class="modal fade" id="delete-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Xoá sản phẩm</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Bạn có muốn xoá sản phẩm này không?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-danger" onclick="confirmDeleted()">Xoá</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Toast message --->
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+    <div id="liveToast" class="bg-success text-white toast hide" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                    aria-label="Close"></button>
+        </div>
+    </div>
+</div>
+</body>
+<script src="/assets/vendor/libs/jquery/jquery.js"></script>
+<script src="/assets/vendor/libs/popper/popper.js"></script>
+<script src="/assets/vendor/js/bootstrap.js"></script>
+<script src="/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
+
+<script src="/assets/vendor/js/menu.js"></script>
+<!-- endbuild -->
+
+<!-- Vendors JS -->
+<script src="/assets/vendor/libs/apex-charts/apexcharts.js"></script>
+
+<!-- Main JS -->
+<script src="/assets/js/main.js"></script>
+
+<!-- Page JS -->
+<script src="/assets/js/dashboards-analytics.js"></script>
+
+<!-- Place this tag in your head or just before your close body tag. -->
+<script async defer src="https://buttons.github.io/buttons.js"></script>
+<script src="/js/product-manager.js"></script>
+</html>

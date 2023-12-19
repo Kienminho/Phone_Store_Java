@@ -7,7 +7,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 public class HomeController {
     @GetMapping("/")
-    public String GetLogin() {
+    public String RenderLogin() {
         return "index";
+    }
+    @GetMapping("/product-manager")
+    public String RenderProductManager() {
+        return "productManager";
+    }
+    @GetMapping("/employee-manager")
+    public String RenderEmployeeManager() {
+        return "employeeManager";
     }
 }

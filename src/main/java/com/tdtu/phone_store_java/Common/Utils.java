@@ -1,6 +1,7 @@
 package com.tdtu.phone_store_java.Common;
 
 import java.security.SecureRandom;
+import java.util.Random;
 import org.mindrot.jbcrypt.BCrypt;
 
 public class Utils {
@@ -33,5 +34,12 @@ public class Utils {
     public static boolean verifyPassword(String password, String hashedPassword) {
         // Check if the provided password matches the hashed password
         return BCrypt.checkpw(password, hashedPassword);
+    }
+
+    //generate barcode
+    public static int generateSixDigitNumber() {
+        // Create a random number between 100000 and 999999 (inclusive)
+        Random random = new Random();
+        return random.nextInt(900000) + 100000;
     }
 }

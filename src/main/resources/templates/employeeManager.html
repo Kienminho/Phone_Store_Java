@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en" class="light-style layout-menu-fixed" dir="ltr" data-theme="theme-default" data-assets-path="/assets/"
+      data-template="vertical-menu-template-free">
+<head th:replace="~{mainFragment :: head}"></head>
+
+<body>
+<div class="layout-wrapper layout-content-navbar">
+    <div class="layout-container">
+        <!-- Menu -->
+        <aside th:replace="~{mainFragment :: aside}">
+        </aside>
+        <!-- / Menu -->
+        <!-- Layout container -->
+        <div class="layout-page">
+            <nav
+                    class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
+                    id="layout-navbar">
+                <div class="layout-menu-toggle navbar-nav align-items-xl-center me-3 me-xl-0 d-xl-none">
+                    <a class="nav-item nav-link px-0 me-xl-4" href="javascript:void(0)">
+                        <i class="bx bx-menu bx-sm"></i>
+                    </a>
+                </div>
+
+                <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
+                    <!-- Search -->
+                    <div class="navbar-nav align-items-center">
+                        <div class="nav-item d-flex align-items-center">
+                            <!--{{!&#45;&#45; <i class="bx bx-search fs-4 lh-0"></i>
+                            <input type="text" class="form-control border-0 shadow-none" placeholder="Search..."
+                                   aria-label="Search..." /> &#45;&#45;}}-->
+                        </div>
+                    </div>
+                    <!-- /Search -->
+
+                    <ul class="navbar-nav flex-row align-items-center ms-auto">
+                        <!-- User -->
+                        <li class="nav-item navbar-dropdown dropdown-user dropdown">
+                            <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
+                                <div class="avatar avatar-online">
+                                    <img src="" id="avatar-user" alt="avatar" class="w-px-40 h-auto rounded-circle" />
+                                </div>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li>
+                                    <a class="dropdown-item" href="#">
+                                        <div class="d-flex">
+                                            <div class="flex-shrink-0 me-3">
+                                                <div class="avatar avatar-online">
+                                                    <img alt="avatar" id="sub-avatar" class="w-px-40 h-auto rounded-circle" />
+                                                </div>
+                                            </div>
+                                            <div class="flex-grow-1">
+                                                <span class="user-name fw-semibold d-block"></span>
+                                                <small class="role text-muted"></small>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <div class="dropdown-divider"></div>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="/my-profile">
+                                        <i class="bx bx-user me-2"></i>
+                                        <span class="align-middle">Hồ sơ</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <div class="dropdown-divider"></div>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="/auth/logout">
+                                        <i class="bx bx-power-off me-2"></i>
+                                        <span class="align-middle">Đăng xuất</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <!--/ User -->
+                    </ul>
+                </div>
+            </nav>
+            <!-- Content wrapper -->
+            <div class="content-wrapper">
+                <!-- Content -->
+                <div class="container-xxl flex-grow-1 container-p-y">
+                    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Admin /</span> Quản lý nhân viên</h4>
+
+                    <!-- Basic Bootstrap Table -->
+                    <div class="card">
+                        <div>
+                            <h5 class="card-header">Sản phẩm</h5>
+                            <button style="margin-left: 24px; margin-bottom:8px" type="button" class="btn btn-primary"
+                                    data-bs-toggle="modal" data-bs-target="#create-employee-modal">Tạo nhân viên</button>
+
+                        </div>
+
+
+                        <div class="text-nowrap">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th>STT</th>
+                                    <th>Họ và tên</th>
+                                    <th>Email</th>
+                                    <th>Địa chỉ</th>
+                                    <th>Số điện thoại</th>
+                                    <th>Trạng thái</th>
+                                    <th>Khoá</th>
+                                    <th>Thao tác</th>
+                                </tr>
+                                </thead>
+                                <tbody class="tbody table-border-bottom-0">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="content-backdrop fade"></div>
+            <!-- Content wrapper -->
+        </div>
+    </div>
+    <!-- Overlay -->
+    <div class="layout-overlay layout-menu-toggle"></div>
+</div>
+
+<div class="modal fade" id="create-employee-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="add-product-modal-label">Tạo mới nhân viên</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="form-create-employee" enctype="application/x-www-form-urlencoded">
+                    <div class="mb-3">
+                        <label for="employee-name">Họ tên nhân viên</label>
+                        <input class="form-control" type="text" placeholder="Nhập tên nhân viên" id="employee-name"
+                               name="employeeName">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="email">Email</label>
+                        <input class="form-control" type="text" placeholder="Nhập email" id="email" name="email">
+                    </div>
+                    <div class="mb-3">
+                        <label for="address">Địa chỉ</label>
+                        <input class="form-control" type="text" placeholder="Nhập địa chỉ" id="address" name="address">
+                    </div>
+                    <div class="mb-3">
+                        <label for="phone-number">Số điện thoại</label>
+                        <input class="form-control" type="text" placeholder="Nhập số diện thoại" id="phone-number"
+                               name="phoneNumber">
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"> Huỷ </button>
+            <button type="button" class="btn-add-product btn btn-primary pe-auto" onclick="createEmployee()"> Tạo
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Delete-->
+<div class="modal fade" id="delete-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Hoạt động</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Bạn có muốn thực hiện hành động này không?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-danger" onclick="confirmDeleted()">Xác nhận</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Toast message --->
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+    <div id="liveToast" class="bg-success text-white toast hide" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                    aria-label="Close"></button>
+        </div>
+    </div>
+</div>
+</body>
+<script src="/assets/vendor/libs/jquery/jquery.js"></script>
+<script src="/assets/vendor/libs/popper/popper.js"></script>
+<script src="/assets/vendor/js/bootstrap.js"></script>
+<script src="/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
+
+<script src="/assets/vendor/js/menu.js"></script>
+<!-- endbuild -->
+
+<!-- Vendors JS -->
+<script src="/assets/vendor/libs/apex-charts/apexcharts.js"></script>
+
+<!-- Main JS -->
+<script src="/assets/js/main.js"></script>
+
+<!-- Page JS -->
+<script src="/assets/js/dashboards-analytics.js"></script>
+
+<!-- Place this tag in your head or just before your close body tag. -->
+<script async defer src="https://buttons.github.io/buttons.js"></script>
+<script src="/js/employee-manager.js"></script>
+</html>
