@@ -8,6 +8,7 @@ public class Utils {
 
     public static String userNameLogin = "";
     public static Long idUserLogin = 0L;
+    public static boolean isLogin = false;
     static SecureRandom random = new SecureRandom();
     private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     public static String GetUserNameByEmail(String email) {

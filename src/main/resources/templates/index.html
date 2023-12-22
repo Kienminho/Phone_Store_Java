@@ -44,7 +44,7 @@
                         <li class="nav-item navbar-dropdown dropdown-user dropdown">
                             <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
                                 <div class="avatar avatar-online">
-                                    <img src="" id="avatar-user" alt="avatar" class="w-px-40 h-auto rounded-circle" />
+                                    <img src="/avatar/avatar.png" id="avatar-user" alt="avatar" class="w-px-40 h-auto rounded-circle" />
                                 </div>
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end">
@@ -53,7 +53,7 @@
                                         <div class="d-flex">
                                             <div class="flex-shrink-0 me-3">
                                                 <div class="avatar avatar-online">
-                                                    <img alt="avatar" id="sub-avatar" class="w-px-40 h-auto rounded-circle" />
+                                                    <img src="/avatar/avatar.png" alt="avatar" id="sub-avatar" class="w-px-40 h-auto rounded-circle" />
                                                 </div>
                                             </div>
                                             <div class="flex-grow-1">
@@ -98,17 +98,27 @@
                                     <div class="col-sm-7">
                                         <div class="card-body">
                                             <div class="mb-3 row">
-                                                <label for="html5-date-input1" class="col-md-2 col-form-label">Từ</label>
+                                                <label for="html5-datetime-local-input" class="col-md-2 col-form-label">Từ</label>
                                                 <div class="col-md-10">
-                                                    <input class="from-date form-control" type="date" value="2023-12-01"
-                                                           id="html5-date-input1" oninput="search()" />
+                                                    <input
+                                                            class="from-date form-control"
+                                                            type="datetime-local"
+                                                            value="2023-12-01T12:30:00"
+                                                            id="html5-datetime-local-input"
+                                                            oninput="search()"
+                                                    />
                                                 </div>
                                             </div>
                                             <div class="mb-3 row">
-                                                <label for="html5-date-input2" class="col-md-2 col-form-label">Đến</label>
+                                                <label for="html5-datetime-local-input" class="col-md-2 col-form-label">Đến</label>
                                                 <div class="col-md-10">
-                                                    <input class="to-date form-control" type="date" value="2023-12-31"
-                                                           id="html5-date-input2" oninput="search()" />
+                                                    <input
+                                                            class="to-date form-control"
+                                                            type="datetime-local"
+                                                            value="2023-12-31T12:30:00"
+                                                            id="html5-datetime-local-input"
+                                                            oninput="search()"
+                                                    />
                                                 </div>
                                             </div>
                                         </div>
@@ -284,12 +294,6 @@
                             </table>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"> Huỷ </button>
-                        <button type="button" class="btn-add-product btn btn-primary pe-auto" onclick="confirmUpdateProduct()"> Cập
-                            nhật
-                        </button>
-                    </div>
                 </div>
             </div>
         </div>
@@ -320,5 +324,5 @@
 
 <!-- Place this tag in your head or just before your close body tag. -->
 <script async defer src="https://buttons.github.io/buttons.js"></script>
-<!--<script src="/js/index.js"></script>-->
+<script src="/js/index.js"></script>
 </html>

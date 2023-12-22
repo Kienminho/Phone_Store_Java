@@ -1,5 +1,6 @@
 package com.tdtu.phone_store_java.Controller;
 
+import com.tdtu.phone_store_java.Common.Utils;
 import com.tdtu.phone_store_java.Model.User;
 import com.tdtu.phone_store_java.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,11 +16,19 @@ public class AuthController {
 
     @Autowired
     private UserRepository userRepository;
+
     @GetMapping("login")
     public String renderLogin() {
         return "login";
     }
 
+    @GetMapping("logout")
+    public String handelLogout() {
+        Utils.isLogin = false;
+        Utils.idUserLogin = 0L;
+        Utils.userNameLogin = "";
+        return "redirect:/auth/login";
+    }
     //active
     @GetMapping("active/{token}")
     public String handleActive(@PathVariable String token, Model model) {
