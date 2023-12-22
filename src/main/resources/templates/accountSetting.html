@@ -33,6 +33,13 @@
                     <!-- /Search -->
 
                     <ul class="navbar-nav flex-row align-items-center ms-auto">
+                        <!-- Place this tag where you want the button to render. -->
+                        <!--{{!&#45;&#45; <li class="nav-item lh-1 me-3">
+                        <a class="github-button" href="https://github.com/themeselection/sneat-html-admin-template-free"
+                           data-icon="octicon-star" data-size="large" data-show-count="true"
+                           aria-label="Star themeselection/sneat-html-admin-template-free on GitHub">Star</a>
+                    </li> &#45;&#45;}}-->
+
                         <!-- User -->
                         <li class="nav-item navbar-dropdown dropdown-user dropdown">
                             <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
@@ -80,105 +87,114 @@
                     </ul>
                 </div>
             </nav>
-            <!-- Content wrapper -->
             <div class="content-wrapper">
                 <!-- Content -->
+
                 <div class="container-xxl flex-grow-1 container-p-y">
-                    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Admin /</span> Quản lý nhân viên</h4>
+                    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Thông tin chi tiết /</span> Tài khoản</h4>
 
-                    <!-- Basic Bootstrap Table -->
-                    <div class="card">
-                        <div>
-                            <h5 class="card-header">Sản phẩm</h5>
-                            <button style="margin-left: 24px; margin-bottom:8px" type="button" class="btn btn-primary"
-                                    data-bs-toggle="modal" data-bs-target="#create-employee-modal">Tạo nhân viên</button>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card mb-4">
+                                <h5 class="card-header">Thông tin cá nhân</h5>
+                                <!-- Account -->
+                                <div class="card-body">
+                                    <div class="d-flex align-items-start align-items-sm-center gap-4">
+                                        <img alt="user-avatar" class="d-block rounded" height="100" width="100"
+                                             id="uploadedAvatar" />
+                                        <div class="button-wrapper">
+                                            <label for="upload" class="btn btn-primary me-2 mb-4" tabindex="0">
+                                                <span class="d-none d-sm-block">Upload new photo</span>
+                                                <i class="bx bx-upload d-block d-sm-none"></i>
+                                                <input type="file" id="upload" class="account-file-input" hidden
+                                                       accept="image/png, image/jpeg" onchange="handleFileChange()" />
+                                            </label>
+                                            <p class="text-muted mb-0">Allowed JPG, GIF or PNG. Max size of 800K</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr class="my-0" />
+                                <div class="card-body">
+                                    <form id="formAccountSettings" method="POST" onsubmit="return false">
+                                        <div class="row">
+                                            <div class="mb-3 col-md-6">
+                                                <label for="fullName" class="form-label">Họ và tên</label>
+                                                <input disabled class="form-control" type="text" id="full-name" name="fullName"
+                                                       value="John" autofocus />
+                                            </div>
+                                            <div class="mb-3 col-md-6">
+                                                <label for="email" class="form-label">E-mail</label>
+                                                <input disabled class="form-control" type="text" id="email" name="email"
+                                                       value="john.doe@example.com" placeholder="john.doe@example.com" />
+                                            </div>
+                                            <div class="mb-3 col-md-6">
+                                                <label for="address" class="form-label">Địa chỉ</label>
+                                                <input disabled type="text" class="form-control" id="address" name="address"
+                                                       placeholder="Address" />
+                                            </div>
+                                            <div class="mb-3 col-md-6">
+                                                <label for="phone-number" class="form-label">Số điện thoại</label>
+                                                <input disabled class="form-control" type="text" name="phoneNumber"
+                                                       id="phone-number" value="" />
+                                            </div>
+                                        </div>
+                                        <div class="mt-2">
+                                            <button type="submit" class="btn btn-primary me-2" onclick="changePassword()">Đổi mật
+                                                khẩu</button>
 
-                        </div>
-
-
-                        <div class="text-nowrap">
-                            <table class="table">
-                                <thead>
-                                <tr>
-                                    <th>STT</th>
-                                    <th>Họ và tên</th>
-                                    <th>Email</th>
-                                    <th>Địa chỉ</th>
-                                    <th>Số điện thoại</th>
-                                    <th>Trạng thái</th>
-                                    <th>Khoá</th>
-                                    <th>Thao tác</th>
-                                </tr>
-                                </thead>
-                                <tbody class="tbody table-border-bottom-0">
-                                </tbody>
-                            </table>
+                                        </div>
+                                    </form>
+                                </div>
+                                <!-- /Account -->
+                            </div>
                         </div>
                     </div>
                 </div>
+
+                <div class="content-backdrop fade"></div>
             </div>
-            <div class="content-backdrop fade"></div>
-            <!-- Content wrapper -->
         </div>
+
     </div>
+
     <!-- Overlay -->
     <div class="layout-overlay layout-menu-toggle"></div>
 </div>
-
-<div class="modal fade" id="create-employee-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<!-- modal change password -->
+<div class="modal fade" id="change-password-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="add-product-modal-label">Tạo mới nhân viên</h5>
+                <h5 class="modal-title" id="add-product-modal-label">Đổi mật khẩu</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <form id="form-create-employee" enctype="application/x-www-form-urlencoded">
                     <div class="mb-3">
-                        <label for="employee-name">Họ tên nhân viên</label>
-                        <input class="form-control" type="text" placeholder="Nhập tên nhân viên" id="employee-name"
-                               name="employeeName">
+                        <label for="old-password">Mật khẩu cũ</label>
+                        <input class="form-control" type="password" placeholder="Nhập mật khẩu cũ" id="old-password"
+                               name="oldPassword">
                     </div>
 
                     <div class="mb-3">
-                        <label for="email">Email</label>
-                        <input class="form-control" type="text" placeholder="Nhập email" id="email" name="email">
+                        <label for="new-password">Mật khẩu mới</label>
+                        <input class="form-control" type="password" placeholder="Nhập mật khẩu mới" id="new-password"
+                               name="newPassword">
                     </div>
                     <div class="mb-3">
-                        <label for="address">Địa chỉ</label>
-                        <input class="form-control" type="text" placeholder="Nhập địa chỉ" id="address" name="address">
+                        <label for="confirm-password">Xác nhận mật khẩu</label>
+                        <input class="form-control" type="password" placeholder="Xác nhận mật khẩu mới"
+                               id="confirm-password" name="confirmPassword">
                     </div>
-                    <div class="mb-3">
-                        <label for="phone-number">Số điện thoại</label>
-                        <input class="form-control" type="text" placeholder="Nhập số diện thoại" id="phone-number"
-                               name="phoneNumber">
-                    </div>
+
                 </form>
             </div>
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"> Huỷ </button>
-            <button type="button" class="btn-add-product btn btn-primary pe-auto" onclick="createEmployee()"> Tạo
+            <button type="button" class="btn-add-product btn btn-primary pe-auto" onclick="confirmChange()"> Lưu thay
+                đổi
             </button>
-        </div>
-    </div>
-</div>
-
-<!-- Modal Delete-->
-<div class="modal fade" id="delete-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Hoạt động</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                Bạn có muốn thực hiện hành động này không?
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                <button type="button" class="btn btn-danger" onclick="confirmDeleted()">Xác nhận</button>
-            </div>
         </div>
     </div>
 </div>
@@ -195,6 +211,7 @@
     </div>
 </div>
 </body>
+
 <script src="/assets/vendor/libs/jquery/jquery.js"></script>
 <script src="/assets/vendor/libs/popper/popper.js"></script>
 <script src="/assets/vendor/js/bootstrap.js"></script>
@@ -214,5 +231,5 @@
 
 <!-- Place this tag in your head or just before your close body tag. -->
 <script async defer src="https://buttons.github.io/buttons.js"></script>
-<script src="/js/employee-manager.js"></script>
+<script src="/js/account-setting.js"></script>
 </html>

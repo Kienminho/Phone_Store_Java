@@ -41,15 +41,15 @@
     <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
     <script src="/assets/js/config.js"></script>
     <script>
-        /*fetch("/api/users/info-mine")
+        fetch("/api/users/info-mine")
             .then((res) => res.json())
             .then((res) => {
                 $(".user-name").text(res.data.username);
                 $(".role").text(res.data.role);
                 $("#avatar-user").attr("src", res.data.avatar ?? "/assets/img/avatars/1.png");
                 $("#sub-avatar").attr("src", res.data.avatar ?? "/assets/img/avatars/1.png");
-                id = res.data._id;
-                if (res.data.role === 'admin') {
+                id = res.data.id;
+                if (res.data.roleName === 'admin') {
                     $(".employee-manager").removeClass("d-none");
                     $(".product-manager").removeClass("d-none");
                 }
@@ -57,7 +57,6 @@
             .catch((err) => {
                 console.log(err);
             });
-*/
     </script>
 </head>
 
@@ -130,13 +129,13 @@
         <li class="menu-header small text-uppercase"><span class="menu-header-text">Forms &amp;
               Tables</span></li>
         <!-- Tables -->
-        <li class="employee-manager menu-item">
+        <li class="employee-manager d-none menu-item">
             <a href="/employee-manager" class="menu-link">
                 <i class="menu-icon tf-icons bx bxs-user-rectangle"></i>
                 <div data-i18n="Tables">Quản lý nhân viên</div>
             </a>
         </li>
-        <li class="product-manager menu-item">
+        <li class="product-manager d-none menu-item">
             <a href="/product-manager" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-devices"></i>
                 <div data-i18n="Tables">Quản lý sản phẩm</div>

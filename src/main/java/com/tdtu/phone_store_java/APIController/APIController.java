@@ -1,24 +1,26 @@
 package com.tdtu.phone_store_java.APIController;
 
+import com.itextpdf.html2pdf.HtmlConverter;
 import com.tdtu.phone_store_java.Common.Response;
 import com.tdtu.phone_store_java.Common.Utils;
-import com.tdtu.phone_store_java.DTO.ProductDTO;
-import com.tdtu.phone_store_java.Model.Product;
-import com.tdtu.phone_store_java.Model.Role;
-import com.tdtu.phone_store_java.Model.User;
-import com.tdtu.phone_store_java.Repository.ProductRepository;
-import com.tdtu.phone_store_java.Repository.RoleRepository;
-import com.tdtu.phone_store_java.Repository.UserRepository;
+import com.tdtu.phone_store_java.DTO.*;
+import com.tdtu.phone_store_java.Model.*;
+import com.tdtu.phone_store_java.Repository.*;
 import com.tdtu.phone_store_java.Service.MailService;
 import com.tdtu.phone_store_java.Service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
@@ -27,6 +29,10 @@ import java.util.*;
 @RestController
 @RequestMapping("/api/")
 public class APIController {
+    private final TemplateEngine templateEngine;
+    public APIController(TemplateEngine templateEngine) {
+        this.templateEngine = templateEngine;
+    }
 
     @Autowired
     private UserRepository userRepository;
@@ -37,9 +43,19 @@ public class APIController {
     @Autowired
     private ProductService productService;
     @Autowired
+    private CartRepository cartRepository;
+    @Autowired
+    private CustomerRepository customerRepository;
+    @Autowired
+    private InvoiceRepository invoiceRepository;
+    @Autowired
+    private InvoiceItemRepository invoiceItemRepository;
+    @Autowired
     private MailService mailService;
     @Value("${spring.servlet.multipart.location}")
     private String uploadPath;
+    @Value("${pdf.outputDirectory}")
+    private String outputDirectory;
 
     // api user
     @PostMapping(value = "user/login")
@@ -48,7 +64,7 @@ public class APIController {
         String password = req.get("password");
 
         //check user exist
-        User existUser = userRepository.getUserByName(userName);
+        UserDTO existUser = userRepository.getUserByName(userName);
         if (existUser == null) {
             return Response.createErrorResponseModel("Nhân viên chưa đăng ký , vui lòng liên hệ với admin", false);
         }
@@ -68,6 +84,9 @@ public class APIController {
                         )
                 );
             }
+            else {
+                return Response.createResponseModel(404, "Mật khẩu sai, vui lòng thử lại", 0, false);
+            }
         }
 
         // so sánh mật khẩu
@@ -78,8 +97,9 @@ public class APIController {
             }
             Utils.userNameLogin = existUser.getUserName();
             Utils.idUserLogin = existUser.getId();
+            Utils.isLogin = true;
             return Response.createSuccessResponseModel(0, Map.of(
-                    "urlRedirect", "/"
+                    "urlRedirect", "/home"
             ));
         }
         return Response.createResponseModel(404, "Mật khẩu sai, vui lòng thử lại", 0, false);
@@ -134,9 +154,77 @@ public class APIController {
 
         User u = optionalUser.get();
         String hashPassword = Utils.hashPassword(password);
+        u.setFirstLogin(false);
         u.setPassword(hashPassword);
         userRepository.save(u);
         return Response.createSuccessResponseModel(0, true);
+    }
+
+    @GetMapping("users/get-all-user")
+    public Object GetAllUser() {
+        List<User> list = userRepository.getAllUser();
+        return Response.createSuccessResponseModel(list.size(), list);
+    }
+
+    @DeleteMapping("users/delete/{id}")
+    public Object BlockUser(@PathVariable String id) {
+        try {
+            Long idUser = Long.parseLong(id);
+            User u = userRepository.getUserById(idUser);
+            u.setIsDeleted(!u.getIsDeleted());
+            userRepository.save(u);
+            return Response.createSuccessResponseModel(0, true);
+        }
+        catch (Exception ex) {
+            return Response.createErrorResponseModel("Vui lòng thử lại", false);
+        }
+    }
+
+    @GetMapping("users/info-mine")
+    public Object GetInfoMine() {
+        UserDTO u = userRepository.getInfoMine(Utils.idUserLogin);
+        return Response.createSuccessResponseModel(1,u);
+    }
+
+    @PostMapping(value = "users/uploadAvatar", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public Object UploadAvatar(@ModelAttribute UserRequestUpload req, @RequestParam("avatar") MultipartFile image) {
+        try {
+            if(!image.isEmpty()) {
+                String avatarLink = saveImage("avatar", image);
+                User u = userRepository.getUserById(req.getId());
+                u.setAvatar(avatarLink);
+                userRepository.save(u);
+                return Response.createSuccessResponseModel(0,true);
+            }
+            return Response.createErrorResponseModel("Vui lòng chọn ảnh.", false);
+        }
+        catch (Exception ex) {
+            return Response.createErrorResponseModel("Vui lòng thử lại.", ex);
+        }
+    }
+
+    @PostMapping("users/change-password")
+    public Object ChangePassword(@RequestBody Map<String, String> req) {
+        try {
+            Long id = Long.parseLong(req.get("id"));
+            String oldPassword = req.get("oldPassword");
+            String password = req.get("password");
+
+            //find user
+            User u = userRepository.getUserById(id);
+            //check password
+            boolean isMatch = Utils.verifyPassword(oldPassword, u.getPassword());
+            if(!isMatch) return Response.createErrorResponseModel("Mật khẩu hiện tại không chính xác, hãy thử lại.", false);
+
+            //hash new password
+            String newPassword = Utils.hashPassword(password);
+            u.setPassword(newPassword);
+            return Response.createSuccessResponseModel(0, true);
+        }
+        catch (Exception ex) {
+            System.out.println("API-Controller-Line 225: "+ ex);
+            return Response.createErrorResponseModel("Vui lòng thử lại.", ex.getMessage());
+        }
     }
 
     // api products
@@ -213,26 +301,260 @@ public class APIController {
 
     }
 
-    //api user
-    @GetMapping("users/get-all-user")
-    public Object GetAllUser() {
-        List<User> list = userRepository.getAllUser();
-        return Response.createSuccessResponseModel(list.size(), list);
+    @GetMapping("products/get-product-by-barcode/{keyword}")
+    public Object GetProductByBarCode(@PathVariable String keyword) {
+        try {
+            List<ProductDTO> list = new ArrayList<>();
+            if(keyword.equals("all"))
+                list = productRepository.getAllProducts();
+            else
+                list = productRepository.getProductByKeyword(keyword);
+            list.sort(Comparator.comparing(ProductDTO::getId));
+            return Response.createSuccessResponseModel(list.size(), list);
+        }
+        catch (Exception ex) {
+            System.out.println(ex.getMessage());
+            return Response.createErrorResponseModel("Vui lòng thử lại.", ex);
+        }
     }
 
-    @DeleteMapping("users/delete/{id}")
-    public Object BlockUser(@PathVariable String id) {
+    @GetMapping("products/carts")
+    public Object GetAllCarts() {
         try {
-            Long idUser = Long.parseLong(id);
-            User u = userRepository.getUserById(idUser);
-            u.setIsDeleted(!u.getIsDeleted());
-            userRepository.save(u);
+            List<Cart> list = cartRepository.getAll(Utils.idUserLogin);
+            return Response.createSuccessResponseModel(list.size(), list);
+        }
+        catch (Exception ex) {
+            System.out.println(ex.getMessage());
+            return Response.createErrorResponseModel("Vui lòng thử lại.", ex);
+        }
+    }
+
+    @GetMapping("products/add-to-cart/{barCode}")
+    public Object AddToCart(@PathVariable String barCode) {
+        try {
+            Product p = productRepository.getProductByBarCode(barCode);
+            if(p == null)
+                return Response.createErrorResponseModel("Không tìm thấy sản phẩm.", false);
+            // Check if the product already exists in the cart
+            Cart c = cartRepository.getCartItem(p.getId());
+            if(c != null) {
+                c.setQuantity(c.getQuantity()+1);
+                c.setTotalMoney(c.getQuantity() * c.getSalePrice());
+                cartRepository.save(c);
+            }
+            else {
+                Cart newCart = new Cart(Utils.idUserLogin, p.getId(), p.getName(), p.getImageLink(), p.getPriceSale(), 1, p.getPriceSale());
+                cartRepository.save(newCart);
+            }
             return Response.createSuccessResponseModel(0, true);
         }
         catch (Exception ex) {
-            return Response.createErrorResponseModel("Vui lòng thử lại", false);
+            System.out.println(ex.getMessage());
+            return Response.createErrorResponseModel("Vui lòng thử lại.", ex);
         }
     }
+
+    @PostMapping("products/update-quantity")
+    public Object UpdateQuantity(@RequestBody Map<String, String> req) {
+        try {
+            Long id = Long.parseLong(req.get("id"));
+            int quantity = Integer.parseInt(req.get("value"));
+            if(quantity < 1)
+                return Response.createErrorResponseModel("Số lượng không thể nhỏ hơn 1.", false);
+            Cart c = cartRepository.getCartItem(id);
+            c.setQuantity(quantity);
+            c.setTotalMoney(quantity * c.getSalePrice());
+            cartRepository.save(c);
+            return Response.createSuccessResponseModel(0, true);
+
+        }
+        catch (Exception ex) {
+            System.out.println(ex.getMessage());
+            return Response.createErrorResponseModel("Vui lòng thử lại.", ex.getMessage());
+        }
+    }
+
+    @DeleteMapping("products/delete-product-in-cart/{id}")
+    public Object DeleteItemInCart(@PathVariable Long id) {
+        try {
+            cartRepository.deleteCartById(id);
+            return Response.createSuccessResponseModel(0, true);
+        }
+        catch (Exception ex) {
+            System.out.println(ex.getMessage());
+            return Response.createErrorResponseModel("Vui lòng thử lại.", ex.getMessage());
+        }
+    }
+
+    //api cart
+    @GetMapping("carts/get-info-cart")
+    public Object GetInFoCart() {
+        try {
+            List<Cart> list = cartRepository.getCartsByIdSalePeople(Utils.idUserLogin);
+            int totalQuantity = 0;
+            int totalAmount = 0;
+            for (Cart i: list) {
+                totalQuantity += i.getQuantity();
+                totalAmount += i.getTotalMoney();
+            }
+            return Response.createSuccessResponseModel(
+                    3,
+                    Map.of(
+                            "totalQuantity", totalQuantity,
+                            "totalAmount", totalAmount,
+                            "cartItems", list
+                    )
+            );
+        }
+        catch (Exception ex) {
+            System.out.println(ex.getMessage());
+            return Response.createErrorResponseModel("Vui lòng thử lại.", ex);
+        }
+    }
+
+    //api customer
+    @PostMapping("customer/get-profile")
+    public Object GetInfoCustomer(@RequestBody Map<String, String> req) {
+        try {
+            String phoneNumber = req.get("phoneNumber");
+            Customer c = customerRepository.getCustomerByPhoneNumber(phoneNumber.trim());
+            if(c == null)
+                return Response.createErrorResponseModel("Khách hàng không tồn tại trong hệ thống", false);
+            return Response.createSuccessResponseModel(1, c);
+        }
+        catch (Exception ex) {
+            System.out.println(ex.getMessage());
+            return Response.createErrorResponseModel("Vui lòng thử lại.", ex);
+        }
+    }
+
+    @PostMapping("customer/get-purchase-history")
+    public Object GetPurchaseHistory(@RequestBody Map<String, String> req) {
+        try {
+            Long id = Long.parseLong(req.get("customerId"));
+            Customer c = customerRepository.getReferenceById(id);
+            List<InvoiceDTO> data = invoiceRepository.findAllWithCustomerAndSalesStaff(id);
+            return Response.createSuccessResponseModel(data.size(), data);
+        }
+        catch (Exception ex) {
+            System.out.println(ex.getMessage());
+            return Response.createErrorResponseModel("Vui lòng thử lại.", ex);
+        }
+    }
+
+    //api Invoice
+    @PostMapping("invoices")
+    public Object CreateInvoice(@RequestBody InvoiceRequest req) {
+        //tăng sale number
+        for (Cart item: req.getItems()) {
+            Product p = productRepository.findProductById(item.getIdProduct());
+            if(p != null) {
+                p.setSaleNumber(p.getSaleNumber() + item.getQuantity());
+                productRepository.save(p);
+            }
+        }
+        // kiểm tra customer
+        Customer c = customerRepository.getCustomerByPhoneNumber(req.getPhoneNumber());
+        if(c == null) {
+             c = new Customer(req.getPhoneNumber(),req.getFullName(), req.getAddress());
+            customerRepository.save(c);
+        }
+        String invoiceCode = String.valueOf(Utils.generateSixDigitNumber());
+        User u = userRepository.getUserById(Utils.idUserLogin);
+        //tạo hoá đơn
+        Invoice invoice = new Invoice(invoiceCode, c, u, req.getReceiveMoney(), req.getMoneyBack(), req.getTotalMoney(), req.getQuantity(), new Date());
+        invoiceRepository.save(invoice);
+        //create invoice item
+        for (Cart item: req.getItems()) {
+            Product productInvoice = productRepository.findProductById(item.getIdProduct());
+            InvoiceItem i = new InvoiceItem(invoice, productInvoice, item.getQuantity(), item.getTotalMoney(), new Date());
+            invoiceItemRepository.save(i);
+        }
+        //xoá cart
+        cartRepository.deleteCartBySalePeople(Utils.idUserLogin);
+        Context thymeleafContext = new Context();
+        //add data
+        thymeleafContext.setVariable("invoice", invoice.getId());
+        thymeleafContext.setVariable("customerName", req.getFullName());
+        thymeleafContext.setVariable("salesStaffName", u.getFullName());
+        thymeleafContext.setVariable("address", req.getAddress());
+        thymeleafContext.setVariable("createdAt", invoice.getCreatedDate());
+        thymeleafContext.setVariable("totalPrice", req.getTotalMoney());
+        thymeleafContext.setVariable("totalProducts", req.getQuantity());
+        thymeleafContext.setVariable("receiveMoney", req.getReceiveMoney());
+        thymeleafContext.setVariable("excessMoney", req.getMoneyBack());
+        thymeleafContext.setVariable("products", req.getItems());
+        String processedHtml = templateEngine.process("invoice", thymeleafContext);
+        String outputPath = outputDirectory + File.separator + invoice.getInvoiceCode()+".pdf";
+        try (FileOutputStream fileOutputStream = new FileOutputStream(outputPath)) {
+            //fileOutputStream.write(processedHtml.getBytes(StandardCharsets.UTF_8));
+            HtmlConverter.convertToPdf(processedHtml, fileOutputStream);
+            return Response.createSuccessResponseModel(
+                    0,
+                    Map.of(
+                            "downloadLink", outputPath,
+                            "urlRedirect", "/pay-success/"+ invoice.getInvoiceCode()
+                    )
+            );
+        }
+        catch (Exception ex) {
+            System.out.println(ex.getMessage());
+            return Response.createErrorResponseModel("Vui lòng thử lại.", ex);
+        }
+    }
+
+    @GetMapping("invoices/get-detail/{id}")
+    public Object GetDetailInvoice(@PathVariable String id) {
+        try {
+            List<InvoiceItemDTO> data = invoiceItemRepository.getDetailInvoice(id);
+            return Response.createSuccessResponseModel(data.size(), data);
+        }
+        catch (Exception ex) {
+            System.out.println(ex.getMessage());
+            return Response.createErrorResponseModel("Vui lòng thử lại.", ex);
+        }
+    }
+
+    //api statistical
+    @GetMapping("statistical/get-data")
+    public Object GetDataStatistical() {
+        try {
+            List<Invoice> listInvoice = invoiceRepository.findAll();
+            List<User> listUser = userRepository.getAllUser();
+            int totalMoney = 0;
+            int totalQuantity = 0;
+            for (Invoice i: listInvoice) {
+                totalMoney += i.getTotalMoney();
+                totalQuantity += i.getQuantity();
+            }
+            return Response.createSuccessResponseModel(1, Map.of(
+                    "money", totalMoney,
+                    "quantity", totalQuantity,
+                    "invoiceNumber", listInvoice.size(),
+                    "userNumber", listUser.size()
+            ));
+        }
+        catch (Exception ex) {
+            System.out.println(ex.getMessage());
+            return Response.createErrorResponseModel("Vui lòng thử lại.", ex);
+        }
+    }
+
+    @PostMapping("statistical/get-data-by-date")
+    public Object GetDataByDate(@RequestBody Map<String, Date> req) {
+        try {
+            Date fromDate = req.get("fromDate");
+            Date toDate = req.get("toDate");
+            List<InvoiceDTO> data = invoiceRepository.findDateByDate(fromDate, toDate);
+            return Response.createSuccessResponseModel(data.size(), data);
+        }
+        catch (Exception ex) {
+            System.out.println(ex.getMessage());
+            return Response.createErrorResponseModel("Vui lòng thử lại.", ex);
+        }
+    }
+
     private String saveImage(String name, MultipartFile image) throws IOException {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
         String formattedDate = dateFormat.format(new Date());

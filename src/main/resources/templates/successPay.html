@@ -33,6 +33,13 @@
                     <!-- /Search -->
 
                     <ul class="navbar-nav flex-row align-items-center ms-auto">
+                        <!-- Place this tag where you want the button to render. -->
+                        <!--{{!&#45;&#45; <li class="nav-item lh-1 me-3">
+                        <a class="github-button" href="https://github.com/themeselection/sneat-html-admin-template-free"
+                           data-icon="octicon-star" data-size="large" data-show-count="true"
+                           aria-label="Star themeselection/sneat-html-admin-template-free on GitHub">Star</a>
+                    </li> &#45;&#45;}}-->
+
                         <!-- User -->
                         <li class="nav-item navbar-dropdown dropdown-user dropdown">
                             <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
@@ -80,121 +87,27 @@
                     </ul>
                 </div>
             </nav>
-            <!-- Content wrapper -->
             <div class="content-wrapper">
                 <!-- Content -->
                 <div class="container-xxl flex-grow-1 container-p-y">
-                    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Admin /</span> Quản lý nhân viên</h4>
-
-                    <!-- Basic Bootstrap Table -->
-                    <div class="card">
-                        <div>
-                            <h5 class="card-header">Sản phẩm</h5>
-                            <button style="margin-left: 24px; margin-bottom:8px" type="button" class="btn btn-primary"
-                                    data-bs-toggle="modal" data-bs-target="#create-employee-modal">Tạo nhân viên</button>
-
-                        </div>
-
-
-                        <div class="text-nowrap">
-                            <table class="table">
-                                <thead>
-                                <tr>
-                                    <th>STT</th>
-                                    <th>Họ và tên</th>
-                                    <th>Email</th>
-                                    <th>Địa chỉ</th>
-                                    <th>Số điện thoại</th>
-                                    <th>Trạng thái</th>
-                                    <th>Khoá</th>
-                                    <th>Thao tác</th>
-                                </tr>
-                                </thead>
-                                <tbody class="tbody table-border-bottom-0">
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
+                    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Admin /</span> Thanh toán thành công</h4>
+                    <p>Thanh toán thành công với mã hoá đơn là <a th:href="${downloadLink}" th:text="${id}"></a></p>
+                    <button class="btn btn-primary" onclick="continueProcess()">Tiếp tục</button>
                 </div>
             </div>
-            <div class="content-backdrop fade"></div>
-            <!-- Content wrapper -->
         </div>
+
     </div>
+
     <!-- Overlay -->
     <div class="layout-overlay layout-menu-toggle"></div>
 </div>
-
-<div class="modal fade" id="create-employee-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="add-product-modal-label">Tạo mới nhân viên</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="form-create-employee" enctype="application/x-www-form-urlencoded">
-                    <div class="mb-3">
-                        <label for="employee-name">Họ tên nhân viên</label>
-                        <input class="form-control" type="text" placeholder="Nhập tên nhân viên" id="employee-name"
-                               name="employeeName">
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="email">Email</label>
-                        <input class="form-control" type="text" placeholder="Nhập email" id="email" name="email">
-                    </div>
-                    <div class="mb-3">
-                        <label for="address">Địa chỉ</label>
-                        <input class="form-control" type="text" placeholder="Nhập địa chỉ" id="address" name="address">
-                    </div>
-                    <div class="mb-3">
-                        <label for="phone-number">Số điện thoại</label>
-                        <input class="form-control" type="text" placeholder="Nhập số diện thoại" id="phone-number"
-                               name="phoneNumber">
-                    </div>
-                </form>
-            </div>
-        </div>
-        <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"> Huỷ </button>
-            <button type="button" class="btn-add-product btn btn-primary pe-auto" onclick="createEmployee()"> Tạo
-            </button>
-        </div>
-    </div>
-</div>
-
-<!-- Modal Delete-->
-<div class="modal fade" id="delete-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Hoạt động</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                Bạn có muốn thực hiện hành động này không?
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                <button type="button" class="btn btn-danger" onclick="confirmDeleted()">Xác nhận</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Toast message --->
-<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
-    <div id="liveToast" class="bg-success text-white toast hide" role="alert" aria-live="assertive" aria-atomic="true">
-        <div class="d-flex">
-            <div class="toast-body">
-            </div>
-            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
-                    aria-label="Close"></button>
-        </div>
-    </div>
-</div>
 </body>
+<script>
+    function continueProcess() {
+        window.location = "/payment"
+    }
+</script>
 <script src="/assets/vendor/libs/jquery/jquery.js"></script>
 <script src="/assets/vendor/libs/popper/popper.js"></script>
 <script src="/assets/vendor/js/bootstrap.js"></script>
@@ -214,5 +127,5 @@
 
 <!-- Place this tag in your head or just before your close body tag. -->
 <script async defer src="https://buttons.github.io/buttons.js"></script>
-<script src="/js/employee-manager.js"></script>
+<!--<script src="/js/index.js"></script>-->
 </html>
