@@ -219,6 +219,7 @@ public class APIController {
             //hash new password
             String newPassword = Utils.hashPassword(password);
             u.setPassword(newPassword);
+            userRepository.save();
             return Response.createSuccessResponseModel(0, true);
         }
         catch (Exception ex) {
